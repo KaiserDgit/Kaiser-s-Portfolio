@@ -1,0 +1,12 @@
+.skills { background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border); }
+.grid { display:grid;grid-template-columns:1fr 340px;gap:5rem;align-items:center; }
+.left {}
+.skillList { display:flex;flex-direction:column;gap:1.4rem; }
+.row {}
+.meta { display:flex;justify-content:space-between;margin-bottom:0.45rem; }
+.name { font-size:0.88rem;color:var(--ink2); }
+.pct { font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--stone); }
+.track { height:4px;background:var(--border);border-radius:100px;overflow:hidden; }
+.fill { height:100%;background:linear-gradient(90deg,var(--green),#7CBB9E);border-radius:100px; }
+.right { display:flex;align-items:center;justify-content:center; }
+@media (max-width:860px) { .grid{grid-template-columns:1fr;gap:3rem;} .right{display:none;} }
