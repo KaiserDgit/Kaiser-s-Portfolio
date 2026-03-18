@@ -49,8 +49,7 @@ export default function About() {
           </div>
           <div className="about-text">
             <h2 className="section-title">About</h2>
-            <p>Enterprise IT experience at Bell Canada and Canada Life gave me something most developers don't have: a deep understanding of how systems fail in the real world. Now finishing my BSc in Computer Science (AI/Machine Learning) at Carleton, I build full stack products in React, JavaScript, Python, and SQL with a bias toward clear architecture and production-ready code.</p>
-            <p>Current focus: AI, SaaS and IT.</p>
+            <p>Software developer with 3 years of experience building full stack applications using React, JavaScript, Python, and SQL. Experienced integrating machine learning models into production web applications, working with data pipelines, and leveraging AI tools to improve software performance and user experience. Comfortable collaborating with cross functional teams and passionate about applying AI and modern development practices to solve real world problems.</p>
             <div className="about-stats">
               <div><div className="stat-num">8+</div><div className="stat-label">Years in IT</div></div>
               <div><div className="stat-num">1</div><div className="stat-label">Degree earned</div></div>
