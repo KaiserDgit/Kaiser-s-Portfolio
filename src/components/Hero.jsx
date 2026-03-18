@@ -23,8 +23,7 @@ export default function Hero() {
           <em>Dualeh.</em>
         </h1>
         <p className="hero-bio">
-          A Computer Science student and IT professional with 8 years of enterprise experience.
-          Solve real problems at the intersection of software, systems, and design.
+          A software developer building full stack applications.
         </p>
       </div>
     </section>
