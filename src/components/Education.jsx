@@ -10,11 +10,11 @@ import carletonLogo from '../pics/carleton_u_2-jukebox-bg-removed.png'
 
 const SCHOOLS = [
   {
-    index: '01',
+    index: '',
     name: 'Carleton University',
     location: 'Ottawa, Ontario',
     degree: 'Bachelor of Computer Science',
-    status: 'Expected 2027',
+    status: '2022 - 2025',
     photo: carletonLogo,
     courses: [
       'Data Structures & Algorithms',
@@ -27,11 +27,11 @@ const SCHOOLS = [
     ],
   },
   {
-    index: '02',
+    index: '',
     name: 'Algonquin College',
     location: 'Ottawa, Ontario',
     degree: 'Computer Programming Diploma',
-    status: 'Graduated, GPA 3.6 / 4.0',
+    status: 'Graduated',
     photo: algonquinLogo,
     courses: [
       'Java & SQL Application Development',
@@ -50,7 +50,8 @@ export default function Education() {
   const ref = useRef(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia(ref)
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
       gsap.utils.toArray('.edu-item').forEach((el) => {
         gsap.fromTo(el,
           { y: 40, opacity: 0 },
@@ -59,8 +60,8 @@ export default function Education() {
           }
         )
       })
-    }, ref)
-    return () => ctx.revert()
+    })
+    return () => mm.revert()
   }, [])
 
   return (
@@ -79,7 +80,7 @@ export default function Education() {
       <div className="section-wrap" style={{ position: 'relative', zIndex: 1 }}>
         <h2 className="section-title">Education</h2>
         {SCHOOLS.map(s => (
-          <div className="edu-item" key={s.index}>
+          <div className="edu-item" key={s.name}>
             <div className="edu-meta">
               <div className="project-index">{s.index}</div>
               <div className="edu-location">{s.location}</div>

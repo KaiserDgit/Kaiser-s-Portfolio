@@ -37,6 +37,35 @@ body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-ser
 .gooey-section-text { font-family: 'Lora', serif; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 600; color: var(--ink); letter-spacing: -0.01em; white-space: nowrap; }
 .hero-bio { font-size: 1.15rem; font-weight: 300; line-height: 1.85; color: var(--ink3); max-width: 580px; margin-bottom: 2.5rem; }
 .hero-bio strong { color: var(--ink2); font-weight: 500; }
+.hero-socials { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1rem; }
+.hero-social-icon { position: relative; display: flex; align-items: center; justify-content: center; width: 55px; height: 55px; border: 1px solid var(--border); border-radius: 10px; }
+.hero-icon-base { stroke: var(--ink3); }
+.hero-icon-trace, .hero-social-border rect {
+  stroke: var(--green);
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 3px var(--green));
+  transition: stroke-dashoffset 1.6s ease;
+}
+.hero-social-icon:hover .hero-icon-trace,
+.hero-social-icon:hover .hero-social-border rect { stroke-dashoffset: 0; }
+.hero-social-border { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero-social-border rect { stroke-width: 1.5; }
+.hero-social-icon::after {
+  content: attr(data-tooltip);
+  position: absolute; bottom: calc(100% + 10px); left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--ink); color: var(--white);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+  padding: 0.4rem 0.7rem; border-radius: 6px; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 10;
+}
+.hero-social-icon::before {
+  content: ''; position: absolute; bottom: calc(100% + 4px); left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent; border-top-color: var(--ink);
+  opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 10;
+}
+.hero-social-icon:hover::after, .hero-social-icon:hover::before { opacity: 1; transform: translateX(-50%) translateY(0); }
 .hero-actions { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
 .hero-scroll { margin-top: 5rem; display: flex; align-items: center; gap: 1rem; color: var(--stone); font-size: 0.8rem; }
 .hero-scroll-line { width: 40px; height: 1px; background: var(--border); }
@@ -69,6 +98,17 @@ body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-ser
 .about-stats { display: flex; gap: 2.5rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
 .stat-num { font-family: 'Lora', serif; font-size: 2rem; font-weight: 600; color: var(--ink); line-height: 1; }
 .stat-label { font-size: 0.8rem; color: var(--stone); margin-top: 0.25rem; }
+.about-tech { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+.about-tech-label { font-family: 'JetBrains Mono', monospace; font-size: 0.805rem; color: var(--stone); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.6rem; }
+.about-tech .tech-row { margin-bottom: 0; }
+.tech-logos { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+.tech-logo { display: flex; align-items: center; justify-content: center; width: 53px; height: 53px; padding: 0.6rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg2); transition: border-color .25s, transform .25s; }
+.tech-logo:hover { border-color: var(--green); transform: translateY(-2px); }
+.tech-logo-sm { width: 40px; height: 40px; padding: 0.45rem; }
+.tech-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* The AWS source art sits inside a wide black margin, so zoom past it to match the other logos. */
+.tech-logo[data-slug="aws"] { overflow: hidden; }
+.tech-logo[data-slug="aws"] img { transform: scale(2); }
 .projects-section { background: var(--bg); border-top: 1px solid var(--border); }
 .project-item { display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; align-items: start; padding: 2.5rem 0; border-bottom: 1px solid var(--border); }
 .project-item:first-of-type { border-top: 1px solid var(--border); }
@@ -82,7 +122,7 @@ body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-ser
 .project-thumb { width: 100%; display: block; object-fit: cover; }
 .project-title { font-size: 0.78rem; color: var(--green); font-weight: 500; margin-bottom: 0.3rem; }
 .project-desc { font-size: 0.95rem; line-height: 1.8; color: var(--ink3); margin-bottom: 1.2rem; }
-.tech-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.2rem; }
+.tech-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: 1.2rem; }
 .tech-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; padding: 0.2rem 0.65rem; background: var(--bg2); color: var(--ink3); border-radius: 4px; border: 1px solid var(--border); }
 .project-links { display: flex; gap: 1.5rem; }
 .p-link { font-size: 0.85rem; font-weight: 500; color: var(--green); text-decoration: none; display: flex; align-items: center; gap: 0.35rem; transition: color .2s; }
@@ -107,6 +147,19 @@ body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-ser
 .edu-photo-wrap { margin-top: 1.2rem; }
 .edu-photo { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; border-radius: 6px; display: block; background: transparent; }
 .edu-photo-placeholder { width: 100%; aspect-ratio: 16 / 9; border: 1px dashed var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; color: var(--stone); }
+.exp-section { background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.exp-item { display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; align-items: start; padding: 2rem 0; border-bottom: 1px solid var(--border); }
+.exp-item:first-of-type { border-top: 1px solid var(--border); }
+.exp-meta { display: flex; flex-direction: column; gap: 0.3rem; }
+.exp-location { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--stone); letter-spacing: 0.05em; }
+.exp-dates { font-size: 0.78rem; color: var(--green); font-weight: 500; margin-top: 0.2rem; }
+.exp-company { font-family: 'Lora', serif; font-size: 1.3rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; line-height: 1.3; }
+.exp-role { font-size: 0.9rem; color: var(--ink3); margin-bottom: 0.9rem; }
+.exp-bullets { display: flex; flex-direction: column; gap: 0.45rem; margin: 0; padding: 0; list-style: none; }
+.exp-bullets li { font-size: 0.85rem; line-height: 1.55; color: var(--ink3); }
+.exp-photo-wrap { margin-top: 1.2rem; }
+.exp-photo { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; border-radius: 6px; display: block; background: transparent; }
+.exp-photo-placeholder { width: 100%; aspect-ratio: 16 / 9; border: 1px dashed var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; color: var(--stone); }
 .contact-section { background: var(--bg); border-top: 1px solid var(--border); }
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
 .contact-copy { font-size: 1rem; line-height: 1.85; color: var(--ink3); margin-bottom: 2rem; }
@@ -151,11 +204,20 @@ body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-ser
   .section-wrap { padding: 4rem 1.5rem; }
   .hero { padding: 7rem 1.5rem 4rem; }
   .about-grid, .skills-grid, .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  /* The grid collapses to one column here, which would otherwise blow the photo up to full width. */
+  .about-photo-wrap { max-width: 50%; }
   .project-item { grid-template-columns: 1fr; gap: 0.8rem; }
   .edu-item { grid-template-columns: 1fr; gap: 1.2rem; }
+  .exp-item { grid-template-columns: 1fr; gap: 1.2rem; }
   .form-row { grid-template-columns: 1fr; }
   .footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
   .gooey-hero-text, .gooey-section-text { white-space: normal; }
+}
+
+/* Phones: drop the 8 infinite offset-path animations entirely. display:none also
+   removes the masked <g> from the render tree, unlike animation:none. */
+@media (max-width: 768px) {
+  .cpu-architecture { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -163,10 +225,20 @@ body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-ser
   .hero-fade { background: linear-gradient(to bottom, rgba(13,13,11,0.95) 40%, rgba(13,13,11,0.75) 100%); }
   .hero-bio { font-size: 1rem; }
   .hero-actions { gap: 1rem; }
+  .hero-socials { gap: 0.9rem; }
+  .hero-social-icon { width: 50px; height: 50px; }
   .hero-scroll { margin-top: 3rem; }
   .section-wrap { padding: 3rem 1.2rem; }
   .section-title { margin-bottom: 2rem; }
   .wind-pill { display: none; }
   .about-stats { gap: 1.5rem; }
   .footer { padding: 1.2rem; }
+}
+
+/* Targeted rather than a blanket animation-duration override, which would also
+   kill the icon stroke-trace and tooltip fades — those are hover affordances. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .about-photo-wrap { animation: none; }
+  .cpu-architecture { display: none; }
 }

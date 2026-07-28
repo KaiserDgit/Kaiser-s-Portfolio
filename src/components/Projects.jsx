@@ -2,21 +2,22 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FallingPattern } from './ui/FallingPattern.jsx'
+import { logoFor, slugify } from '../lib/techLogos.js'
 import thumb1 from '../pics/Screenshot 2026-03-12 094422.png'
 import thumb2 from '../pics/Screenshot 2026-03-12 153051.png'
 gsap.registerPlugin(ScrollTrigger)
 
 const PROJECTS = [
   {
-    index: '01', type: 'AI Analytics App', year: '2026',
+    index: '', type: 'AI Analytics App', year: '',
     title: 'ClearVision AI',
     url: 'https://courtvisionai-kappa.vercel.app/',
     thumb: thumb1,
     desc: 'Full stack AI-powered basketball analytics web application integrating a large language model API to generate real time scouting reports, shot charts, and game strategies from raw game data. Architected and modularized a large codebase into 14 organized components across a scalable folder structure. Engineered structured JSON prompt schemas that return consistent, parseable analytics data rendered across 6 dynamic UI modules.',
-    tech: ['React', 'JavaScript', 'PostgreSQL', 'LLM API'],
+    tech: ['React', 'JavaScript', 'PostgreSQL'],
   },
   {
-    index: '02', type: 'Healthcare Platform', year: '2026',
+    index: '', type: 'Healthcare Platform', year: '',
     title: 'ClearQ',
     url: 'https://clearq.vercel.app/',
     thumb: thumb2,
@@ -29,7 +30,8 @@ export default function Projects() {
   const ref = useRef(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia(ref)
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
       gsap.utils.toArray('.project-item').forEach((el, i) => {
         gsap.fromTo(el,
           { y: 40, opacity: 0 },
@@ -39,8 +41,8 @@ export default function Projects() {
           }
         )
       })
-    }, ref)
-    return () => ctx.revert()
+    })
+    return () => mm.revert()
   }, [])
 
   return (
@@ -59,7 +61,7 @@ export default function Projects() {
       <div className="section-wrap" style={{ position: 'relative', zIndex: 1 }}>
         <h2 className="section-title">Projects</h2>
         {PROJECTS.map(p => (
-          <div className="project-item" key={p.index}>
+          <div className="project-item" key={p.title}>
             <div>
               <div className="project-index">{p.index}</div>
               <div className="project-type">{p.title}</div>
@@ -71,7 +73,14 @@ export default function Projects() {
             <div>
               <div className="project-title">{p.type}</div>
               <div className="project-desc">{p.desc}</div>
-              <div className="tech-row">{p.tech.map(t => <span className="tech-tag" key={t}>{t}</span>)}</div>
+              <div className="tech-row">
+                {p.tech.map(t => {
+                  const logo = logoFor(t)
+                  return logo
+                    ? <span className="tech-logo tech-logo-sm" key={t} data-slug={slugify(t)} title={t}><img src={logo} alt={t} /></span>
+                    : <span className="tech-tag" key={t}>{t}</span>
+                })}
+              </div>
             </div>
           </div>
         ))}

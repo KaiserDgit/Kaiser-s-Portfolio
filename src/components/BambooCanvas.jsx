@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react'
+import { useDeviceProfile } from '../hooks/useDeviceProfile.js'
 
 const STEMS  = ['#6B8F5E','#5A7D4E','#7DA068','#4E7044','#89A874']
 const NODES  = ['#4A6B3A','#3D5C30','#527844']
 const LEAVES = ['#7CBB6A','#5FA050','#8BC878','#4E8C42','#6BAA58']
 
+const MAX_BAMBOO = 140
+
 class Bamboo {
-  constructor(x, h, fromClick = false) {
+  constructor(x, h, fromClick = false, leafDensity = 1) {
     this.x = x; this.baseY = h * 0.82 + (Math.random()-0.5)*16
     this.totalSegs = Math.floor(Math.random()*7)+5; this.segH = Math.random()*26+20
     this.width = Math.random()*7+4
@@ -16,7 +19,9 @@ class Bamboo {
     this.swayOffset = Math.random()*Math.PI*2; this.swayAmp = Math.random()*0.011+0.005
     this.windEffect = 0; this.layer = Math.random(); this.leaves = []
     for (let i=2; i<this.totalSegs; i++) {
-      const side = Math.random()>0.5?1:-1; const n=Math.floor(Math.random()*3)+1
+      const side = Math.random()>0.5?1:-1
+      // Leaves dominate per-frame cost: 2 bezier curves + fill + stroke each.
+      const n=Math.max(1,Math.round((Math.floor(Math.random()*3)+1)*leafDensity))
       for (let l=0;l<n;l++) this.leaves.push({
         seg:i, side:l%2===0?side:-side, angle:Math.random()*0.4+0.15,
         len:Math.random()*26+16, width:Math.random()*4+3,
@@ -94,30 +99,39 @@ export default function BambooCanvas({ wind }) {
   const canvasRef = useRef(null)
   const windRef   = useRef(wind)
   const mouseRef  = useRef({ x: -999 })
-  const stateRef  = useRef({ bamboos: [], fireflies: [], t: 0, raf: null })
+  const stateRef  = useRef({ bamboos: [], fireflies: [], t: 0, raf: null, w: 0, h: 0, last: 0 })
 
+  const { isMobile, reducedMotion } = useDeviceProfile()
+  const mobileRef = useRef(isMobile)
+  useEffect(() => { mobileRef.current = isMobile }, [isMobile])
   useEffect(() => { windRef.current = wind }, [wind])
 
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
     const state = stateRef.current
-    function dims() { return { w: canvas.parentElement.offsetWidth||800, h: canvas.parentElement.offsetHeight||600 } }
+
+    // Measured once per resize rather than per frame — reading offsetWidth/Height
+    // inside the loop forced two synchronous layouts on every tick.
+    function measure() {
+      state.w = canvas.parentElement.offsetWidth||800
+      state.h = canvas.parentElement.offsetHeight||600
+    }
     function init() {
-      const {w,h} = dims(); canvas.width=w; canvas.height=h
+      const w=state.w, h=state.h; canvas.width=w; canvas.height=h
+      const mobile=mobileRef.current
       state.bamboos=[]
-      const count=Math.floor(w/36)+3
+      const count=Math.floor(w/(mobile?64:36))+3
+      const leafDensity=mobile?0.5:1
       for(let i=0;i<count;i++){
         const x=50+(i/count)*(w-100)+(Math.random()-0.5)*25
-        state.bamboos.push(new Bamboo(x,h,false))
+        state.bamboos.push(new Bamboo(x,h,false,leafDensity))
       }
       state.bamboos.sort((a,b)=>a.layer-b.layer)
-      state.fireflies=Array.from({length:10},()=>new Firefly(w,h))
+      state.fireflies=Array.from({length:mobile?4:10},()=>new Firefly(w,h))
     }
-    init()
-    function loop(){
-      state.raf=requestAnimationFrame(loop); state.t+=0.016
-      const {w,h}=dims(); const wv=windRef.current; const mx=mouseRef.current.x
+    function draw(){
+      const w=state.w, h=state.h; const wv=windRef.current; const mx=mouseRef.current.x
       ctx.clearRect(0,0,w,h)
       ctx.fillStyle='#FAFAF8'; ctx.fillRect(0,0,w,h)
       ctx.fillStyle='#EDE8DC'; ctx.fillRect(0,h*0.76,w,h*0.24)
@@ -126,11 +140,48 @@ export default function BambooCanvas({ wind }) {
       state.bamboos.forEach(b=>{b.update(wv,state.t,mx);b.draw(ctx,wv,state.t)})
       ctx.fillStyle='rgba(226,219,204,0.55)'; ctx.fillRect(0,h*0.9,w,h*0.1)
     }
-    loop()
-    const onResize=()=>init()
+    function loop(){
+      state.raf=requestAnimationFrame(loop)
+      const now=performance.now()
+      state.t+=Math.min((now-state.last)/1000,0.05)   // delta-timed; was a fixed step that ran 2x fast at 120Hz
+      state.last=now
+      draw()
+    }
+    // stop() MUST null the id, or StrictMode's second effect run can't restart the loop.
+    function stop(){ if(state.raf!=null){ cancelAnimationFrame(state.raf); state.raf=null } }
+    function start(){ if(state.raf==null){ state.last=performance.now(); loop() } }
+
+    measure(); init(); draw()
+
+    const cleanups=[]
+    if(!reducedMotion){
+      const io=new IntersectionObserver(([e])=>(e.isIntersecting?start():stop()),{threshold:0,rootMargin:'100px 0px'})
+      io.observe(canvas)
+      const onVis=()=>(document.hidden?stop():start())
+      document.addEventListener('visibilitychange',onVis)
+      cleanups.push(()=>{ io.disconnect(); document.removeEventListener('visibilitychange',onVis) })
+    }
+
+    // iOS fires resize on every URL-bar collapse; only a real width change is worth
+    // regenerating every stalk for.
+    let resizeTimer=null
+    const onResize=()=>{
+      clearTimeout(resizeTimer)
+      resizeTimer=setTimeout(()=>{
+        const prevW=state.w
+        measure(); canvas.width=state.w; canvas.height=state.h
+        if(Math.abs(state.w-prevW)>32) init()
+        draw()
+      },150)
+    }
     window.addEventListener('resize',onResize)
-    return ()=>{ cancelAnimationFrame(state.raf); window.removeEventListener('resize',onResize) }
-  }, [])
+
+    return ()=>{
+      stop(); clearTimeout(resizeTimer)
+      cleanups.forEach(fn=>fn())
+      window.removeEventListener('resize',onResize)
+    }
+  }, [reducedMotion])
 
   return (
     <canvas
@@ -139,8 +190,9 @@ export default function BambooCanvas({ wind }) {
       onMouseMove={e=>{const r=canvasRef.current.getBoundingClientRect();mouseRef.current.x=e.clientX-r.left}}
       onMouseLeave={()=>{mouseRef.current.x=-999}}
       onClick={e=>{
+        if(stateRef.current.bamboos.length>=MAX_BAMBOO) return
         const r=canvasRef.current.getBoundingClientRect()
-        const b=new Bamboo(e.clientX-r.left,canvasRef.current.height,true)
+        const b=new Bamboo(e.clientX-r.left,canvasRef.current.height,true,isMobile?0.5:1)
         stateRef.current.bamboos.push(b)
         stateRef.current.bamboos.sort((a,b2)=>a.layer-b2.layer)
       }}
