@@ -14,7 +14,7 @@ const SCHOOLS = [
     name: 'Carleton University',
     location: 'Ottawa, Ontario',
     degree: 'Bachelor of Computer Science',
-    status: '2022 - 2025',
+    status: '2022 - 2026',
     photo: carletonLogo,
     courses: [
       'Data Structures & Algorithms',
