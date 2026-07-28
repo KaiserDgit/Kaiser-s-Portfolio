@@ -22,7 +22,7 @@ const EXPERIENCE = [
   {
     index: '',
     company: 'Bell Canada',
-    role: 'Help Desk Analyst',
+    role: 'System Analyst',
     dates: '2018 - 2022',
     photo: bellLogo,
     bullets: [
