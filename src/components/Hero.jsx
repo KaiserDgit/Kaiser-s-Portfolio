@@ -44,7 +44,7 @@ export default function Hero() {
       <div className="hero-inner" ref={innerRef}>
 <h1 className="hero-name">
           Kaiser<br />
-          <em>Dualeh.</em>
+          <em>Dualeh</em>
         </h1>
         <p className="hero-bio">
           A software developer building full stack applications.

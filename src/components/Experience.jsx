@@ -11,6 +11,7 @@ const EXPERIENCE = [
     index: '',
     company: 'Canada Life',
     role: 'Software Developer',
+    dates: '2022 - 2026',
     photo: canadaLifeLogo,
     bullets: [
       'Built and maintained 50+ automated test cases, cutting manual testing effort 40% and speeding up verification 30%.',
@@ -22,6 +23,7 @@ const EXPERIENCE = [
     index: '',
     company: 'Bell Canada',
     role: 'Help Desk Analyst',
+    dates: '2018 - 2022',
     photo: bellLogo,
     bullets: [
       'Delivered bilingual IT support to 2,000+ employees across Windows, Microsoft 365, and mobile environments, consistently meeting SLA targets.',
@@ -68,6 +70,7 @@ export default function Experience() {
             <div className="exp-meta">
               <div className="project-index">{e.index}</div>
               <div className="exp-location">{e.location}</div>
+              <div className="exp-dates">{e.dates}</div>
               <div className="exp-photo-wrap">
                 {e.photo
                   ? <img src={e.photo} alt={e.company} className="exp-photo" />
