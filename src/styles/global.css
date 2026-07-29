@@ -13,15 +13,10 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
-.nav { position: fixed; top: 0; width: 100%; z-index: 100; padding: 0 5rem; display: flex; justify-content: space-between; align-items: center; height: 64px; }
+/* Breathing room when the drawer's anchor links jump to a section. */
+#hero, #about, #experience, #projects, #education { scroll-margin-top: 1.5rem; }
 .section-pattern-wrap { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .section-pattern-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 30%, var(--bg) 80%); }
-.nav-logo { font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 600; color: var(--ink); text-decoration: none; }
-.nav-links { display: flex; gap: 2.5rem; list-style: none; }
-.nav-links a { color: var(--ink3); text-decoration: none; font-size: 0.875rem; transition: color .2s; }
-.nav-links a:hover { color: var(--green); }
-.nav-cta { font-size: 0.875rem; font-weight: 500; color: var(--green); text-decoration: none; border: 1px solid var(--green); padding: 0.45rem 1.2rem; border-radius: 6px; transition: background .2s, color .2s; }
-.nav-cta:hover { background: var(--green); color: var(--white); }
 .hero { min-height: 100vh; display: flex; align-items: center; padding: 8rem 5rem 6rem; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
 .hero-cpu-bg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
 .hero-fade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to right, rgba(13,13,11,0.97) 36%, rgba(13,13,11,0.65) 60%, rgba(13,13,11,0.05) 100%); pointer-events: none; }
@@ -199,8 +194,6 @@ body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-ser
 @keyframes animation-path { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
 
 @media (max-width: 860px) {
-  .nav { padding: 0 1.5rem; }
-  .nav-links { display: none; }
   .section-wrap { padding: 4rem 1.5rem; }
   .hero { padding: 7rem 1.5rem 4rem; }
   .about-grid, .skills-grid, .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }

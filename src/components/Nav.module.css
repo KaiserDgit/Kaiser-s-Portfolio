@@ -1,17 +1,59 @@
-.nav {
-  position: fixed; top: 0; width: 100%; z-index: 100;
-  background: rgba(250,250,248,0.92); backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 5rem; display: flex; justify-content: space-between; align-items: center; height: 64px;
+.toggle {
+  position: fixed; top: 1.25rem; right: 1.5rem; z-index: 210;
+  width: 44px; height: 44px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  /* Legible over both the near-black hero and the lighter --white section panels. */
+  background: rgba(22, 22, 20, 0.8); backdrop-filter: blur(8px);
+  border: 1px solid var(--border); border-radius: 8px;
+  cursor: pointer; padding: 0;
+  transition: border-color .2s;
 }
-.logo { font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 600; color: var(--ink); }
-.links { display: flex; gap: 2.5rem; list-style: none; }
-.links a { color: var(--ink3); font-size: 0.875rem; transition: color 0.2s; }
+.toggle:hover { border-color: var(--green); }
+.toggle:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+
+.bar {
+  display: block; width: 18px; height: 1.5px; border-radius: 1px;
+  background: var(--ink);
+  transition: transform .3s ease, opacity .2s ease;
+}
+.toggleOpen .bar:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.toggleOpen .bar:nth-child(2) { opacity: 0; }
+.toggleOpen .bar:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* Invisible: it spans the whole viewport, so any tint here would also darken
+   what shows through the translucent drawer. Kept purely as a click-to-close target. */
+.backdrop {
+  position: fixed; inset: 0; z-index: 190;
+  background: transparent;
+}
+
+.drawer {
+  position: fixed; top: 0; right: 0; z-index: 200;
+  /* dvh so the panel doesn't run under the iOS URL bar. */
+  height: 100dvh; width: min(320px, 82vw);
+  /* Just enough wash to keep the links legible — the page (and the hero's CPU
+     animation) stays visible straight through it. No blur, deliberately. */
+  background: rgba(13, 13, 11, 0.3);
+  border-left: 1px solid var(--border);
+  /* Clears the toggle button, which floats above the panel. */
+  padding: 6rem 2rem 2rem;
+  overflow-y: auto;
+}
+
+.links { display: flex; flex-direction: column; list-style: none; }
+.links a {
+  display: block; padding: 1rem 0;
+  border-bottom: 1px solid rgba(238, 237, 232, 0.12);
+  font-family: 'Lora', serif; font-size: 1.35rem; line-height: 1.3;
+  color: var(--ink); text-decoration: none;
+  /* Carries the text over whatever is moving underneath it. */
+  text-shadow: 0 1px 10px rgba(13, 13, 11, 0.95);
+  transition: color .2s;
+}
 .links a:hover { color: var(--green); }
-.cta {
-  font-size: 0.875rem; font-weight: 500; color: var(--green);
-  border: 1px solid var(--green); padding: 0.45rem 1.2rem; border-radius: 6px;
-  transition: background 0.2s, color 0.2s;
+.links a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+
+@media (max-width: 860px) {
+  .toggle { top: 1rem; right: 1rem; }
+  .drawer { padding: 5rem 1.5rem 1.5rem; }
 }
-.cta:hover { background: var(--green); color: #fff; }
-@media (max-width: 860px) { .nav { padding: 0 1.5rem; } .links { display: none; } }
