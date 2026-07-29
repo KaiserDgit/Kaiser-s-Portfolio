@@ -5,23 +5,46 @@ import { FallingPattern } from './ui/FallingPattern.jsx'
 import { logoFor, slugify } from '../lib/techLogos.js'
 import thumb1 from '../pics/Screenshot 2026-03-12 094422.png'
 import thumb2 from '../pics/Screenshot 2026-03-12 153051.png'
+import bidsenseThumb from '../pics/Bidsense picture.jpg'
 gsap.registerPlugin(ScrollTrigger)
+
+// Thumb and url are both optional so a project can be listed before its
+// screenshot or public link exists, rather than rendering a broken <img>.
+function ProjectThumb({ project }) {
+  if (!project.thumb) {
+    return <div className="project-thumb-placeholder">SCREENSHOT PENDING</div>
+  }
+  const img = <img src={project.thumb} alt={project.title} className="project-thumb" />
+  const slug = slugify(project.title)
+  if (!project.url) return <div className="project-thumb-link" data-project={slug}>{img}</div>
+  return (
+    <a href={project.url} target="_blank" rel="noreferrer" className="project-thumb-link" data-project={slug}>{img}</a>
+  )
+}
 
 const PROJECTS = [
   {
-    index: '', type: 'AI Analytics App', year: '',
+    index: '', type: 'AI Cost Estimation Platform', year: '',
+    title: 'BidSense',
+    url: '',
+    thumb: bidsenseThumb,
+    desc: 'Built an ML pipeline in Python with scikit learn to predict construction cost and timeline overruns, framing it as a regression problem and comparing several models to choose the most accurate, and prototyped a PyTorch neural network to benchmark against the simpler models. Moved the heaviest feature encoding work into a C++ preprocessing module to cut pipeline processing time by roughly 30%, and served predictions through a FastAPI endpoint containerized with Docker and deployed to AWS, tracking model versions per client in PostgreSQL.',
+    tech: ['Python', 'PyTorch', 'scikit learn', 'C++', 'FastAPI', 'PostgreSQL', 'Docker', 'Kubernetes', 'AWS'],
+  },
+  {
+    index: '', type: 'AI Basketball Analytics Platform', year: '',
     title: 'ClearVision AI',
     url: 'https://courtvisionai-kappa.vercel.app/',
     thumb: thumb1,
-    desc: 'Full stack AI-powered basketball analytics web application integrating a large language model API to generate real time scouting reports, shot charts, and game strategies from raw game data. Architected and modularized a large codebase into 14 organized components across a scalable folder structure. Engineered structured JSON prompt schemas that return consistent, parseable analytics data rendered across 6 dynamic UI modules.',
-    tech: ['React', 'JavaScript', 'PostgreSQL'],
+    desc: 'Built a full stack AI analytics app (React/TypeScript frontend, C# .NET backend) that generates scouting reports by retrieving the most relevant game data and passing it to an LLM so the output stays grounded in real stats, a retrieval augmented (RAG) approach built with LangChain and a vector database, with API keys kept server side. Designed typed React components and validated the LLM JSON output against a schema so the interface always rendered consistent, well formed reports, and deployed the application on AWS.',
+    tech: ['React', 'TypeScript', 'C#', '.NET', 'LangChain', 'RAG', 'Vector DB', 'PostgreSQL', 'AWS'],
   },
   {
     index: '', type: 'Healthcare Platform', year: '',
     title: 'ClearQ',
     url: 'https://clearq.vercel.app/',
     thumb: thumb2,
-    desc: 'Real time ER queue management platform addressing a critical gap in Canadian healthcare patients have zero visibility into their wait, costing clinics $150–$300 per walkout. Built a dynamic ETA engine that recalculates all patient wait times simultaneously on any status change, using CTAS priority levels and queue depth. Features a 5 tier patient journey system, staff dashboard with priority escalation, triage filters, and PHIPA compliant authentication concept via health card and date of birth.',
+    desc: 'Real time ER queue management platform addressing a critical gap in Canadian healthcare patients have zero visibility into their wait, costing clinics $150 to $300 per walkout. Built a dynamic ETA engine that recalculates all patient wait times simultaneously on any status change, using CTAS priority levels and queue depth. Features a 5 tier patient journey system, staff dashboard with priority escalation, triage filters, and PHIPA compliant authentication concept via health card and date of birth.',
     tech: ['React', 'JavaScript', 'PostgreSQL'],
   },
 ]
@@ -66,9 +89,7 @@ export default function Projects() {
               <div className="project-index">{p.index}</div>
               <div className="project-type">{p.title}</div>
               <div className="project-year">{p.year}</div>
-              <a href={p.url} target="_blank" rel="noreferrer" className="project-thumb-link">
-                <img src={p.thumb} alt={p.title} className="project-thumb" />
-              </a>
+              <ProjectThumb project={p} />
             </div>
             <div>
               <div className="project-title">{p.type}</div>

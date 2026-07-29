@@ -32,7 +32,7 @@ const TECH = [
       { name: 'Docker', slug: 'docker' },
       { name: 'AWS', slug: 'aws' },
       { name: 'Postman', slug: 'postman' },
-      { name: 'Claude', slug: 'claude' },
+      { name: 'Claude Code', slug: 'claudecode' },
       { name: 'Git', slug: 'git' },
     ],
   },
@@ -76,15 +76,19 @@ export default function About() {
           </div>
           <div className="about-text">
             <h2 className="section-title">About</h2>
-            <p>Software developer with 3 years of experience building full stack applications. Experienced integrating machine learning models into production web applications, working with data pipelines, and leveraging AI tools to improve software performance and user experience. Comfortable collaborating with cross functional teams and passionate about applying AI and modern development practices to solve real world problems.</p>
+            <p>Software developer with over 5 years of combined experience in application development, automated testing, and enterprise IT support. Skilled in C++, C#, Oracle PL/SQL, and web application development with Agile delivery. Built production grade test frameworks in C# and C++ at Canada Life. Holds an active federal Reliability Security Clearance and a Computer Programming Diploma from Algonquin College.</p>
             <div className="about-tech">
               {TECH.map(group => (
                 <div className="about-tech-group" key={group.label}>
                   <div className="about-tech-label">{group.label}</div>
                   <div className="tech-logos">
-                    {group.items.filter(item => LOGOS[item.slug]).map(item => (
-                      <span className="tech-logo" key={item.slug} data-slug={item.slug} title={item.name}>
-                        <img src={LOGOS[item.slug]} alt={item.name} />
+                    {group.items.filter(item => LOGOS[item.slug]).map((item, i) => (
+                      <span className="tech-logo" key={item.slug} data-slug={item.slug} title={item.name} style={{ '--i': i }}>
+                        <span className="tech-logo-spin">
+                          <img src={LOGOS[item.slug]} alt={item.name} />
+                          {/* Reverse face, same art flipped, so the spin never shows a mirrored logo. */}
+                          <img src={LOGOS[item.slug]} alt="" aria-hidden="true" className="tech-logo-back" />
+                        </span>
                       </span>
                     ))}
                   </div>

@@ -32,7 +32,8 @@ body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-ser
 .gooey-section-text { font-family: 'Lora', serif; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 600; color: var(--ink); letter-spacing: -0.01em; white-space: nowrap; }
 .hero-bio { font-size: 1.15rem; font-weight: 300; line-height: 1.85; color: var(--ink3); max-width: 580px; margin-bottom: 2.5rem; }
 .hero-bio strong { color: var(--ink2); font-weight: 500; }
-.hero-socials { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1rem; }
+/* wrap: five icons overflow the row below ~340px viewports. */
+.hero-socials { display: flex; flex-wrap: wrap; align-items: center; gap: 1.2rem; margin-bottom: 1rem; }
 .hero-social-icon { position: relative; display: flex; align-items: center; justify-content: center; width: 55px; height: 55px; border: 1px solid var(--border); border-radius: 10px; }
 .hero-icon-base { stroke: var(--ink3); }
 .hero-icon-trace, .hero-social-border rect {
@@ -97,13 +98,63 @@ body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-ser
 .about-tech-label { font-family: 'JetBrains Mono', monospace; font-size: 0.805rem; color: var(--stone); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.6rem; }
 .about-tech .tech-row { margin-bottom: 0; }
 .tech-logos { display: flex; flex-wrap: wrap; gap: 0.8rem; }
-.tech-logo { display: flex; align-items: center; justify-content: center; width: 53px; height: 53px; padding: 0.6rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg2); transition: border-color .25s, transform .25s; }
+/* perspective makes the spin read as real depth rather than a flat horizontal squash. */
+.tech-logo { display: flex; align-items: center; justify-content: center; width: 53px; height: 53px; padding: 0.6rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg2); perspective: 220px; transition: border-color .25s, transform .25s; }
 .tech-logo:hover { border-color: var(--green); transform: translateY(-2px); }
-.tech-logo-sm { width: 40px; height: 40px; padding: 0.45rem; }
-.tech-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-/* The AWS source art sits inside a wide black margin, so zoom past it to match the other logos. */
-.tech-logo[data-slug="aws"] { overflow: hidden; }
-.tech-logo[data-slug="aws"] img { transform: scale(2); }
+/* Projects-only tile (About scopes its own size under .about-tech).
+   54px = 40px + 35%; padding scaled by the same factor so the logo inside
+   grows proportionally rather than just gaining empty margin. */
+.tech-logo-sm { width: 54px; height: 54px; padding: 0.61rem; }
+/* transform lives here, not on .tech-logo-spin img, Projects renders bare <img>
+   with no spin wrapper, and scoping it to the wrapper silently dropped the zoom there. */
+.tech-logo img { width: 100%; height: 100%; object-fit: contain; display: block; transform: scale(var(--logo-scale, 1)); }
+/* These source images carry their own margin baked in, so at the same tile size
+   they read smaller than logos that fill their frame. Zoom each past its margin;
+   the factor is per-image because the amount of padding varies. Held in a custom
+   property so the spin below can compose it with the back face's flip. */
+.tech-logo[data-slug="aws"],
+.tech-logo[data-slug="claudecode"],
+.tech-logo[data-slug="nodejs"],
+.tech-logo[data-slug="postgresql"],
+.tech-logo[data-slug="postman"],
+.tech-logo[data-slug="nextjs"],
+.tech-logo[data-slug="fastapi"],
+.tech-logo[data-slug="scikitlearn"] { overflow: hidden; }
+.tech-logo[data-slug="aws"]        { --logo-scale: 2; }    /* wide black margin */
+.tech-logo[data-slug="claudecode"] { --logo-scale: 1.45; }
+.tech-logo[data-slug="nodejs"]     { --logo-scale: 1.25; } /* circle already fills the canvas */
+.tech-logo[data-slug="postgresql"] { --logo-scale: 1.3; }
+.tech-logo[data-slug="postman"]    { --logo-scale: 1.45; }
+.tech-logo[data-slug="nextjs"]      { --logo-scale: 2; }
+.tech-logo[data-slug="fastapi"]     { --logo-scale: 2; }
+.tech-logo[data-slug="scikitlearn"] { --logo-scale: 1.45; } /* 2, less 15% twice */
+
+/* Continuous 3D spin. Rendered as a two-faced card, a mirrored copy on the
+   reverse, so the mark reads correctly through the whole revolution instead of
+   showing a backwards logo for half of it. Negative per-tile delay staggers the
+   row into a wave rather than having all 14 turn in lockstep. */
+.tech-logo-spin {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  animation: tech-logo-spin 6s linear infinite;
+  animation-delay: calc(var(--i, 0) * -0.42s);
+}
+.tech-logo-spin img {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+}
+/* Needs to outrank `.tech-logo-spin img` above, which also sets transform. */
+.tech-logo-spin .tech-logo-back { transform: rotateY(180deg) scale(var(--logo-scale, 1)); }
+@keyframes tech-logo-spin { to { transform: rotateY(360deg); } }
+
+/* About runs the logos bare, no frame, no fill, so they spin against the section
+   itself. Scoped to .about-tech because Projects reuses .tech-logo for its inline
+   tech tags, which keep their tiles. Dropping the padding also lets each mark use
+   the full 53px instead of 33.8px, so they read noticeably larger. */
+/* 37px = 53px - 30%. perspective scales with it (220 - 30%), otherwise the spin
+   reads flatter, the depth effect depends on the ratio of perspective to size. */
+.about-tech .tech-logo { border: none; background: none; border-radius: 0; padding: 0; width: 37px; height: 37px; perspective: 154px; }
+.about-tech .tech-logos { gap: 1.1rem; }
 .projects-section { background: var(--bg); border-top: 1px solid var(--border); }
 .project-item { display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; align-items: start; padding: 2.5rem 0; border-bottom: 1px solid var(--border); }
 .project-item:first-of-type { border-top: 1px solid var(--border); }
@@ -113,8 +164,16 @@ body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-ser
 .project-link { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.8rem; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; color: var(--green); text-decoration: none; transition: opacity 0.2s; }
 .project-link:hover { opacity: 0.7; }
 .project-thumb-link { display: block; margin-top: 1rem; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); transition: opacity 0.2s, transform 0.2s; width: 110%; }
-.project-thumb-link:hover { opacity: 0.85; transform: scale(1.01); }
+/* anchor-only: a project without a url renders this class on a plain div, which
+   shouldn't respond to hover like something clickable. */
+a.project-thumb-link:hover { opacity: 0.85; transform: scale(1.01); }
+/* BidSense's art is a square logo, not a wide screenshot, so it renders much
+   taller than the others at the same width. 99% = the standard 110%, less 10%. */
+.project-thumb-link[data-project="bidsense"] { width: 99%; }
 .project-thumb { width: 100%; display: block; object-fit: cover; }
+/* Stands in for a project listed before its screenshot exists. Matches the
+   dashed-frame convention already used by .edu-photo-placeholder. */
+.project-thumb-placeholder { margin-top: 1rem; width: 110%; aspect-ratio: 16 / 9; border: 1px dashed var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; color: var(--stone); }
 .project-title { font-size: 0.78rem; color: var(--green); font-weight: 500; margin-bottom: 0.3rem; }
 .project-desc { font-size: 0.95rem; line-height: 1.8; color: var(--ink3); margin-bottom: 1.2rem; }
 .tech-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: 1.2rem; }
@@ -229,9 +288,11 @@ body { background: var(--bg); color: var(--ink2); font-family: 'Inter', sans-ser
 }
 
 /* Targeted rather than a blanket animation-duration override, which would also
-   kill the icon stroke-trace and tooltip fades — those are hover affordances. */
+   kill the icon stroke-trace and tooltip fades, those are hover affordances. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .about-photo-wrap { animation: none; }
+  /* Settles on the front face; the reverse stays hidden via backface-visibility. */
+  .tech-logo-spin { animation: none; }
   .cpu-architecture { display: none; }
 }

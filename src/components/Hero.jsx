@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { CpuArchitecture } from '@/components/ui/cpu-architecture'
 import { useDeviceProfile } from '../hooks/useDeviceProfile.js'
+import { RESUME_URL } from '../lib/site.js'
 
 // Renders the icon twice: a resting base layer, plus a green layer that traces
 // itself in on hover. The border gets the same treatment via an overlaid rect.
@@ -72,6 +73,15 @@ export default function Hero() {
           {/* GitHub */}
           <SocialIcon href="https://github.com/KaiserDgit" label="GitHub" tooltip="github.com/KaiserDgit" external>
             <path pathLength="1" d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+          </SocialIcon>
+
+          {/* Resume */}
+          <SocialIcon href={RESUME_URL} label="Resume" tooltip="View résumé (PDF)" external>
+            <path pathLength="1" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline pathLength="1" points="14 2 14 8 20 8"/>
+            <line pathLength="1" x1="16" y1="13" x2="8" y2="13"/>
+            <line pathLength="1" x1="16" y1="17" x2="8" y2="17"/>
+            <polyline pathLength="1" points="10 9 9 9 8 9"/>
           </SocialIcon>
 
         </div>

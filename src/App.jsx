@@ -16,7 +16,7 @@ ScrollTrigger.config({ ignoreMobileResize: true })
 
 export default function App() {
   // Trigger positions are computed before the ~25 unsized images finish loading,
-  // so they're stale by the time the user scrolls — worse on mobile where the
+  // so they're stale by the time the user scrolls, worse on mobile where the
   // images span the full column width.
   useEffect(() => {
     const onLoad = () => ScrollTrigger.refresh()

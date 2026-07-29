@@ -111,7 +111,7 @@ export default function BambooCanvas({ wind }) {
     const ctx = canvas.getContext('2d')
     const state = stateRef.current
 
-    // Measured once per resize rather than per frame — reading offsetWidth/Height
+    // Measured once per resize rather than per frame, reading offsetWidth/Height
     // inside the loop forced two synchronous layouts on every tick.
     function measure() {
       state.w = canvas.parentElement.offsetWidth||800

@@ -31,7 +31,7 @@
   position: fixed; top: 0; right: 0; z-index: 200;
   /* dvh so the panel doesn't run under the iOS URL bar. */
   height: 100dvh; width: min(320px, 82vw);
-  /* Just enough wash to keep the links legible — the page (and the hero's CPU
+  /* Just enough wash to keep the links legible, the page (and the hero's CPU
      animation) stays visible straight through it. No blur, deliberately. */
   background: rgba(13, 13, 11, 0.3);
   border-left: 1px solid var(--border);
@@ -52,6 +52,15 @@
 }
 .links a:hover { color: var(--green); }
 .links a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+
+/* Marks the entries that leave the page rather than scrolling to a section. */
+.linkArrow {
+  width: 14px; height: 14px;
+  margin-left: 0.5rem; vertical-align: 1px;
+  color: var(--stone);
+  transition: color .2s, transform .2s;
+}
+.links a:hover .linkArrow { color: var(--green); transform: translate(2px, -2px); }
 
 @media (max-width: 860px) {
   .toggle { top: 1rem; right: 1rem; }

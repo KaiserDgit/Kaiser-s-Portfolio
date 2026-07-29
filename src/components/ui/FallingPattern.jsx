@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { useDeviceProfile } from '../../hooks/useDeviceProfile.js'
 
 /**
- * FallingPattern — animated rainfall of thin lines with a dot-grid blur overlay.
+ * FallingPattern, animated rainfall of thin lines with a dot-grid blur overlay.
  * Adapted from the shadcn component for the Kaiser portfolio (Vite + React + GSAP).
  *
  * Animating background-position is not composited, so each instance costs a full
@@ -12,14 +12,14 @@ import { useDeviceProfile } from '../../hooks/useDeviceProfile.js'
  * loop is paused while the section is off-screen.
  *
  * Props:
- *   color           — primary color of falling streaks (default: portfolio green)
- *   backgroundColor — background fill color (default: portfolio bg)
- *   duration        — full animation loop in seconds (default: 150)
- *   blurIntensity   — backdrop blur of overlay (default: '1em')
- *   density         — dot-grid spacing multiplier (default: 1)
- *   forceFreeze     — render the static frame regardless of device (default: false)
- *   className       — extra classes on the wrapper div
- *   style           — extra inline styles on the wrapper div
+ *   color: primary color of falling streaks (default: portfolio green)
+ *   backgroundColor: background fill color (default: portfolio bg)
+ *   duration: full animation loop in seconds (default: 150)
+ *   blurIntensity: backdrop blur of overlay (default: '1em')
+ *   density: dot-grid spacing multiplier (default: 1)
+ *   forceFreeze: render the static frame regardless of device (default: false)
+ *   className: extra classes on the wrapper div
+ *   style: extra inline styles on the wrapper div
  */
 
 const generateBackgroundImage = (color) => [
@@ -148,7 +148,7 @@ export function FallingPattern({
         <div style={{ ...layerStyle, backgroundPosition: START_POSITIONS }} />
       )}
 
-      {/* Dot-grid blur overlay — kept on both paths; with a transparent
+      {/* Dot-grid blur overlay, kept on both paths; with a transparent
           backgroundColor its blur is the only visual contribution. */}
       <div
         style={{

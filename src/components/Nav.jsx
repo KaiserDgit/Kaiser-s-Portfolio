@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import styles from './Nav.module.css'
+import { RESUME_URL } from '../lib/site.js'
 
+// `external` entries leave the page instead of scrolling to a section.
 const LINKS = [
   { href: '#hero',       label: 'Home' },
   { href: '#about',      label: 'About' },
   { href: '#experience', label: 'Experience' },
   { href: '#projects',   label: 'Projects' },
   { href: '#education',  label: 'Education' },
+  { href: RESUME_URL,    label: 'Resume', external: true },
 ]
 
 // Matches the cubic-bezier(.22,1,.36,1) easing the rest of the page uses.
@@ -50,7 +53,7 @@ export default function Nav() {
         <span className={styles.bar} />
       </button>
 
-      {/* Both siblings sit directly under AnimatePresence — a wrapping fragment
+      {/* Both siblings sit directly under AnimatePresence, a wrapping fragment
           would be the unkeyed child and their exit animations would be skipped. */}
       <AnimatePresence>
         {open && (
@@ -85,8 +88,21 @@ export default function Nav() {
                       href={link.href}
                       ref={i === 0 ? firstLinkRef : null}
                       onClick={() => setOpen(false)}
+                      {...(link.external ? { target: '_blank', rel: 'noreferrer' } : {})}
                     >
                       {link.label}
+                      {link.external && (
+                        <svg
+                          className={styles.linkArrow}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.75"
+                          aria-hidden="true"
+                        >
+                          <path d="M7 17 17 7M9 7h8v8" />
+                        </svg>
+                      )}
                     </a>
                   </li>
                 ))}

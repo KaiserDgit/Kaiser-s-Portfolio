@@ -30,7 +30,7 @@ function makeSubscribe(query) {
 }
 
 // useSyncExternalStore rather than useState+useEffect so the value is correct on
-// the very first render — otherwise mobile would build a WebGL context for one
+// the very first render, otherwise mobile would build a WebGL context for one
 // frame before the lighter branch swapped in.
 export function useMediaQuery(query) {
   const subscribe = useMemo(() => makeSubscribe(query), [query])
